@@ -1,0 +1,9 @@
+{
+	"name": "certusfinal",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "58b248f7-f2fe-4a1f-bdb9-2080c77cc0df",
+		"tenantId": "9832aa01-80f6-4da8-aa78-fc07ed2aef6c"
+	}
+}
