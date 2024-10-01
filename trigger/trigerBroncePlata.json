@@ -16,7 +16,7 @@
 			"recurrence": {
 				"frequency": "Minute",
 				"interval": 20,
-				"startTime": "2024-10-01T18:47:00",
+				"startTime": "2024-10-01T18:53:00",
 				"endTime": "2024-10-03T19:42:00",
 				"timeZone": "SA Pacific Standard Time"
 			}
