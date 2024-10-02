@@ -1,0 +1,25 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline_AUTOMATIZACION_FLUJOCOMPLETO",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2024-10-01T21:42:00",
+				"endTime": "2024-10-03T02:39:00",
+				"timeZone": "SA Pacific Standard Time"
+			}
+		}
+	}
+}
