@@ -14,10 +14,10 @@
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Minute",
-				"interval": 1,
+				"frequency": "Hour",
+				"interval": 8,
 				"startTime": "2024-09-30T22:05:00",
-				"endTime": "2024-10-03T02:39:00",
+				"endTime": "2024-10-02T02:39:00",
 				"timeZone": "SA Pacific Standard Time"
 			}
 		}
