@@ -7,10 +7,6 @@
 			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "certusfinal"
 		},
-		"Conector_ADLS_Datafactory_accountKey": {
-			"type": "secureString",
-			"metadata": "Cadena protegida para \"accountKey\"de \"Conector_ADLS_Datafactory\""
-		},
 		"AzureDatabricks1_accessToken": {
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"accessToken\"de \"AzureDatabricks1\""
@@ -19,9 +15,9 @@
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"accessToken\"de \"AzureDatabricks2\""
 		},
-		"Conector_ADLS_Datafactory_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://certusstoragev1.dfs.core.windows.net/"
+		"Conector_ADLS_Datafactory_accountKey": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"accountKey\"de \"Conector_ADLS_Datafactory\""
 		},
 		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
 			"type": "string",
@@ -30,6 +26,10 @@
 		"AzureDatabricks2_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "1001-160527-eb6wf6ju"
+		},
+		"Conector_ADLS_Datafactory_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://certusstoragev1.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -70,6 +70,42 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ingesta_capaplata_capaoro')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PLATAORO",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/Users/ckcertus@hotmail.com/Ingesta_capaplata_capaoro"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks2",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks2')]"
 			]
 		},
 		{
@@ -214,6 +250,89 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_AUTOMATIZACION_FLUJOCOMPLETO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ingesta_input_capabronce",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ingesta_input_capabronce",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ingesta_capabronce_capaplata",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ingesta_input_capabronce",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ingesta_capabronce_capaplata",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "ingesta_capaplata_capaoro",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ingesta_capabronce_capaplata",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "ingesta_capaplata_capaoro",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/ingesta_input_capabronce')]",
+				"[concat(variables('factoryId'), '/pipelines/ingesta_capabronce_capaplata')]",
+				"[concat(variables('factoryId'), '/pipelines/ingesta_capaplata_capaoro')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Archivo_output_capa_bronce')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -334,24 +453,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Conector_ADLS_Datafactory')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "conector Azure DataLake Storage con DataFactory",
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('Conector_ADLS_Datafactory_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('Conector_ADLS_Datafactory_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/AzureDatabricks1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -365,6 +466,42 @@
 						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
 					"existingClusterId": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricks2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-3342856823651965.5.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDatabricks2_accessToken')]"
+					},
+					"existingClusterId": "[parameters('AzureDatabricks2_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Conector_ADLS_Datafactory')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "conector Azure DataLake Storage con DataFactory",
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('Conector_ADLS_Datafactory_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('Conector_ADLS_Datafactory_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -401,143 +538,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/ingesta_capaplata_capaoro')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "PLATAORO",
-						"type": "DatabricksNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebookPath": "/Users/ckcertus@hotmail.com/Ingesta_capaplata_capaoro"
-						},
-						"linkedServiceName": {
-							"referenceName": "AzureDatabricks2",
-							"type": "LinkedServiceReference"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureDatabricks2')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureDatabricks",
-				"typeProperties": {
-					"domain": "https://adb-3342856823651965.5.azuredatabricks.net",
-					"accessToken": {
-						"type": "SecureString",
-						"value": "[parameters('AzureDatabricks2_accessToken')]"
-					},
-					"existingClusterId": "[parameters('AzureDatabricks2_properties_typeProperties_existingClusterId')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pipeline_AUTOMATIZACION_FLUJOCOMPLETO')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ingesta_input_capabronce",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "ingesta_input_capabronce",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ingesta_capabronce_capaplata",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ingesta_input_capabronce",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "ingesta_capabronce_capaplata",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					},
-					{
-						"name": "ingesta_capaplata_capaoro",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ingesta_capabronce_capaplata",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "ingesta_capaplata_capaoro",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/ingesta_input_capabronce')]",
-				"[concat(variables('factoryId'), '/pipelines/ingesta_capabronce_capaplata')]",
-				"[concat(variables('factoryId'), '/pipelines/ingesta_capaplata_capaoro')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/trigger1')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -556,10 +556,10 @@
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
-						"frequency": "Minute",
-						"interval": 1,
+						"frequency": "Hour",
+						"interval": 8,
 						"startTime": "2024-09-30T22:05:00",
-						"endTime": "2024-10-03T02:39:00",
+						"endTime": "2024-10-02T02:39:00",
 						"timeZone": "SA Pacific Standard Time"
 					}
 				}

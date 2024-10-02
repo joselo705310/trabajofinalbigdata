@@ -7,10 +7,6 @@
 			"metadata": "Nombre de instancia de Data Factory",
 			"defaultValue": "certusfinal"
 		},
-		"Conector_ADLS_Datafactory_accountKey": {
-			"type": "secureString",
-			"metadata": "Cadena protegida para \"accountKey\"de \"Conector_ADLS_Datafactory\""
-		},
 		"AzureDatabricks1_accessToken": {
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"accessToken\"de \"AzureDatabricks1\""
@@ -19,9 +15,9 @@
 			"type": "secureString",
 			"metadata": "Cadena protegida para \"accessToken\"de \"AzureDatabricks2\""
 		},
-		"Conector_ADLS_Datafactory_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://certusstoragev1.dfs.core.windows.net/"
+		"Conector_ADLS_Datafactory_accountKey": {
+			"type": "secureString",
+			"metadata": "Cadena protegida para \"accountKey\"de \"Conector_ADLS_Datafactory\""
 		},
 		"AzureDatabricks1_properties_typeProperties_existingClusterId": {
 			"type": "string",
@@ -30,6 +26,10 @@
 		"AzureDatabricks2_properties_typeProperties_existingClusterId": {
 			"type": "string",
 			"defaultValue": "1001-160527-eb6wf6ju"
+		},
+		"Conector_ADLS_Datafactory_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://certusstoragev1.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -58,23 +58,23 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"Conector_ADLS_Datafactory_accountKey": {
-						"value": "[parameters('Conector_ADLS_Datafactory_accountKey')]"
-					},
 					"AzureDatabricks1_accessToken": {
 						"value": "[parameters('AzureDatabricks1_accessToken')]"
 					},
 					"AzureDatabricks2_accessToken": {
 						"value": "[parameters('AzureDatabricks2_accessToken')]"
 					},
-					"Conector_ADLS_Datafactory_properties_typeProperties_url": {
-						"value": "[parameters('Conector_ADLS_Datafactory_properties_typeProperties_url')]"
+					"Conector_ADLS_Datafactory_accountKey": {
+						"value": "[parameters('Conector_ADLS_Datafactory_accountKey')]"
 					},
 					"AzureDatabricks1_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('AzureDatabricks1_properties_typeProperties_existingClusterId')]"
 					},
 					"AzureDatabricks2_properties_typeProperties_existingClusterId": {
 						"value": "[parameters('AzureDatabricks2_properties_typeProperties_existingClusterId')]"
+					},
+					"Conector_ADLS_Datafactory_properties_typeProperties_url": {
+						"value": "[parameters('Conector_ADLS_Datafactory_properties_typeProperties_url')]"
 					}
 				}
 			},
