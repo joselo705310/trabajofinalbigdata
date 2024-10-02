@@ -1,0 +1,70 @@
+{
+	"name": "pipeline_AUTOMATIZACION_FLUJOCOMPLETO",
+	"properties": {
+		"activities": [
+			{
+				"name": "ingesta_input_capabronce",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ingesta_input_capabronce",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ingesta_capabronce_capaplata",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ingesta_input_capabronce",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ingesta_capabronce_capaplata",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "ingesta_capaplata_capaoro",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ingesta_capabronce_capaplata",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "ingesta_capaplata_capaoro",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}

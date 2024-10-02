@@ -1,0 +1,33 @@
+{
+	"name": "AUTOMATIZACION",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline_AUTOMATIZACION_FLUJOCOMPLETO",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-10-02T02:31:00",
+				"endTime": "2024-10-07T02:31:00",
+				"timeZone": "SA Pacific Standard Time",
+				"schedule": {
+					"minutes": [
+						20
+					],
+					"hours": [
+						15
+					]
+				}
+			}
+		}
+	}
+}
